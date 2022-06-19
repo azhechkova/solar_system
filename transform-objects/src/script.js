@@ -1,54 +1,69 @@
 import "./style.css";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-const canvas = document.getElementById("webgl");
-const scene = new THREE.Scene();
+let camera, controls, scene, renderer;
 
-const group = new THREE.Group();
+init();
+animate();
 
-const cube1 = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: "#000" })
-);
+function init() {
+  scene = new THREE.Scene();
+  const group = new THREE.Group();
 
-const cube2 = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: "#000" })
-);
-cube2.position.x = -2;
+  const cube1 = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: "#000" })
+  );
 
-const cube3 = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: "#000" })
-);
-cube3.position.x = 2;
+  const cube2 = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: "#000" })
+  );
+  cube2.position.x = -2;
 
-group.add(cube1);
-group.add(cube2);
-group.add(cube3);
+  const cube3 = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: "#000" })
+  );
+  cube3.position.x = 2;
 
-scene.add(group);
+  group.add(cube1);
+  group.add(cube2);
+  group.add(cube3);
+  scene.add(group);
 
-const sizes = {
-  width: 800,
-  height: 600,
-};
+  const canvas = document.getElementById("webgl");
 
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
 
-camera.position.set(0, 0, 3);
+  camera = new THREE.PerspectiveCamera(
+    70,
+    window.innerWidth / window.innerHeight
+  );
+  camera.position.set(0, 0, 3);
 
-const renderer = new THREE.WebGLRenderer({
-  canvas,
-  alpha: true,
-});
+  controls = new OrbitControls(camera, renderer.domElement);
 
-renderer.setSize(sizes.width, sizes.height);
+  window.addEventListener("resize", onWindowResize);
+}
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
 function animate() {
   requestAnimationFrame(animate);
-  group.rotation.y += 0.01;
-  renderer.render(scene, camera);
+  controls.update();
+  render();
 }
 
-animate();
+function render() {
+  renderer.render(scene, camera);
+}
