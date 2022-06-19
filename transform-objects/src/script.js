@@ -2,7 +2,6 @@ import "./style.css";
 import * as THREE from "three";
 
 const canvas = document.getElementById("webgl");
-
 const scene = new THREE.Scene();
 
 const group = new THREE.Group();
@@ -40,7 +39,7 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
 camera.position.set(0, 0, 3);
 
 const renderer = new THREE.WebGLRenderer({
-  canvas: canvas,
+  canvas,
   alpha: true,
 });
 
