@@ -3,29 +3,28 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import "./style.css";
 
-let camera, controls, scene, renderer;
+let camera, controls, scene, renderer, group;
 
-init();
-animate();
+const clock = new THREE.Clock();
 
 function init() {
   scene = new THREE.Scene();
-  const group = new THREE.Group();
+  group = new THREE.Group();
 
   const cube1 = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: "#000" })
+    new THREE.MeshBasicMaterial({ color: "#00f" })
   );
 
   const cube2 = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: "#000" })
+    new THREE.MeshBasicMaterial({ color: "#ff0" })
   );
   cube2.position.x = -2;
 
   const cube3 = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: "#000" })
+    new THREE.MeshBasicMaterial({ color: "#f00" })
   );
   cube3.position.x = 2;
 
@@ -62,9 +61,22 @@ function onWindowResize() {
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
+
+  // // adapt to the framerate
+  const elapsedTime = clock.getElapsedTime();
+
+  // const currentTime = Date.now();
+  // const deltaTime = currentTime - time;
+  // time = Date.now();
+
+  group.rotation.y = Math.sin(elapsedTime);
+
   render();
 }
 
 function render() {
   renderer.render(scene, camera);
 }
+
+init();
+animate();
