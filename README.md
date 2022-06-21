@@ -1,10 +1,13 @@
 # Three.js Journey
 
+View [Project](https://azhechkova.github.io/threejs_basics/dist/index)
+
 ## Setup
+
 Download [Node.js](https://nodejs.org/en/download/).
 Run this followed commands:
 
-``` bash
+```bash
 # Install dependencies (only the first time)
 npm install
 
