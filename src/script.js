@@ -77,16 +77,16 @@ function animate() {
   requestAnimationFrame(animate);
   controls.update();
 
-  // // adapt to the framerate
+  render();
+
+  // adapt to the framerate
   // const elapsedTime = clock.getElapsedTime();
 
   // another way to adapt to the framerate
+
   // const currentTime = Date.now();
   // const deltaTime = currentTime - time;
   // time = Date.now();
-
-  // group.rotation.y = Math.sin(elapsedTime);
-  render();
 }
 
 function render() {
