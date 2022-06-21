@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+import gsap from "gsap";
+
 import "./style.css";
 
 let camera, controls, scene, renderer, group;
-
-const clock = new THREE.Clock();
 
 function init() {
   scene = new THREE.Scene();
@@ -49,6 +49,21 @@ function init() {
 
   controls = new OrbitControls(camera, renderer.domElement);
 
+  gsap.to(group?.position, {
+    duration: 1,
+    delay: 1,
+    x: 2,
+    repeatDelay: 1,
+    repeat: true,
+  });
+  gsap.to(group?.position, {
+    duration: 1,
+    delay: 2,
+    x: 0,
+    repeatDelay: 1,
+    repeat: true,
+  });
+
   window.addEventListener("resize", onWindowResize);
 }
 
@@ -63,14 +78,14 @@ function animate() {
   controls.update();
 
   // // adapt to the framerate
-  const elapsedTime = clock.getElapsedTime();
+  // const elapsedTime = clock.getElapsedTime();
 
+  // another way to adapt to the framerate
   // const currentTime = Date.now();
   // const deltaTime = currentTime - time;
   // time = Date.now();
 
-  group.rotation.y = Math.sin(elapsedTime);
-
+  // group.rotation.y = Math.sin(elapsedTime);
   render();
 }
 
