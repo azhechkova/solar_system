@@ -65,6 +65,7 @@ function init() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
 
   window.addEventListener("resize", () => onWindowResize(camera, renderer));
 
