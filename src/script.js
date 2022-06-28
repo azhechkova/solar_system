@@ -30,22 +30,22 @@ function init() {
   sun.position.set(0, 0, 0);
   scene.add(sun);
 
-  mercury = createPlanet(0.38 / 10, MercuryTexture, 25);
+  mercury = createPlanet(0.38 / 10, MercuryTexture, 20);
   scene.add(mercury);
 
-  venus = createPlanet(0.95 / 10, VenusTexture, 260 / 10);
+  venus = createPlanet(0.95 / 10, VenusTexture, 26);
   scene.add(venus);
 
-  earth = createPlanet(1 / 10, EarthTexture, 280 / 10);
+  earth = createPlanet(1 / 10, EarthTexture, 30);
   scene.add(earth);
 
-  mars = createPlanet(0.53 / 10, MarsTexture, 290 / 10);
+  mars = createPlanet(0.53 / 10, MarsTexture, 35);
   scene.add(mars);
 
-  jupiter = createPlanet(11.19 / 10, JupiterTexture, 340 / 10);
+  jupiter = createPlanet(11.19 / 10, JupiterTexture, 45);
   scene.add(jupiter);
 
-  saturn = createPlanet(9.4 / 10, SaturnTexture, 390 / 10);
+  saturn = createPlanet(9.4 / 10, SaturnTexture, 50);
   scene.add(saturn);
 
   const canvas = document.getElementById("webgl");

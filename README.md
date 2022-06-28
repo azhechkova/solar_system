@@ -1,4 +1,4 @@
-# Three.js Journey
+# Solar System
 
 View [Project](https://azhechkova.github.io/threejs_basics/dist/index)
 
