@@ -1,6 +1,6 @@
 # Solar System
 
-View [Project](https://azhechkova.github.io/threejs_basics/dist/index)
+View [Project](https://azhechkova.github.io/solar_system/dist/index)
 
 ## Setup
 
