@@ -1,109 +1,109 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-import fullScreen from "./scripts/fullScreen";
-import onWindowResize from "./scripts/resize";
-import createPlanet from "./scripts/createPlanet";
+import fullScreen from "./helpers/fullScreen";
+import onWindowResize from "./helpers/resize";
+import Planet from "./models/Planet";
+import { PLANETS } from "./constants";
 
-import SunTexture from "../static/images/sun.jpg";
-import EarthTexture from "../static/images/earth.jpg";
-import MercuryTexture from "../static/images/mercury.jpg";
-import VenusTexture from "../static/images/venus.jpg";
-import MarsTexture from "../static/images/mars.jpg";
-import JupiterTexture from "../static/images/jupiter.jpg";
-import SaturnTexture from "../static/images/saturn.jpg";
 import BG from "../static/images/bg.jpg";
 
 import "./style.css";
 
-let camera, controls, scene, renderer;
+class SolarSystem {
+  constructor() {
+    this.init = this.init.bind(this);
+    this.animate = this.animate.bind(this);
+    this.createPlanets = this.createPlanets.bind(this);
+    this.start = this.start.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onClick = this.onClick.bind(this);
 
-let earth, mercury, venus, mars, jupiter, saturn, sun;
+    this.canvas = document.getElementById("webgl");
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight
+    );
+    this.raycaster = new THREE.Raycaster();
+    this.pointer = new THREE.Vector2();
+  }
 
-function init() {
-  scene = new THREE.Scene();
-  const loader = new THREE.TextureLoader();
-  const bgTexture = loader.load(BG);
-  scene.background = bgTexture;
+  createPlanets() {
+    const planets = PLANETS.map((item) => {
+      const newPlanet = new Planet(item);
+      newPlanet.create(this.scene);
+      return newPlanet;
+    });
 
-  sun = createPlanet(109 / 10, SunTexture);
-  sun.position.set(0, 0, 0);
-  scene.add(sun);
+    this.planets = planets;
+  }
 
-  mercury = createPlanet(0.38 / 10, MercuryTexture, 20);
-  scene.add(mercury);
+  init() {
+    const loader = new THREE.TextureLoader();
 
-  venus = createPlanet(0.95 / 10, VenusTexture, 26);
-  scene.add(venus);
+    const bgTexture = loader.load(BG);
 
-  earth = createPlanet(1 / 10, EarthTexture, 30);
-  scene.add(earth);
+    this.scene.background = bgTexture;
 
-  mars = createPlanet(0.53 / 10, MarsTexture, 35);
-  scene.add(mars);
+    this.createPlanets();
 
-  jupiter = createPlanet(11.19 / 10, JupiterTexture, 45);
-  scene.add(jupiter);
+    this.camera.position.z = 40;
 
-  saturn = createPlanet(9.4 / 10, SaturnTexture, 50);
-  scene.add(saturn);
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+      alpha: true,
+    });
 
-  const canvas = document.getElementById("webgl");
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight
-  );
-  camera.position.z = 40;
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true;
+    this.renderer.render(this.scene, this.camera);
 
-  renderer = new THREE.WebGLRenderer({
-    canvas,
-    alpha: true,
-  });
+    window.addEventListener("resize", () =>
+      onWindowResize(this.camera, this.renderer)
+    );
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    window.addEventListener("dblclick", () => fullScreen(this.canvas));
+    window.addEventListener("pointermove", this.onMouseMove);
+    window.addEventListener("click", this.onClick);
+  }
 
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
+  animate() {
+    requestAnimationFrame(this.animate);
+    this.controls.update();
 
-  window.addEventListener("resize", () => onWindowResize(camera, renderer));
+    this.planets.forEach((item) => item.animate());
 
-  window.addEventListener("dblclick", () => fullScreen(canvas));
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  onMouseMove(e) {
+    this.pointer.set(
+      (e.clientX / window.innerWidth) * 2 - 1,
+      -(e.clientY / window.innerHeight) * 2 + 1
+    );
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    this.intersects = this.raycaster.intersectObjects(
+      this.scene.children,
+      true
+    );
+  }
+
+  onClick() {
+    if (this.intersects[0]) {
+      this.intersects[0]?.object?.onClick &&
+        this.intersects[0]?.object?.onClick(this.camera);
+    }
+  }
+
+  start() {
+    this.init();
+    this.animate();
+  }
 }
 
-const EARTH_YEAR = 2 * Math.PI * (1 / 60) * (1 / 60);
-
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-
-  sun.rotation.y += 0.001;
-
-  mercury.position.x += EARTH_YEAR * 4;
-  mercury.rotation.y += EARTH_YEAR * 4;
-
-  earth.position.x += EARTH_YEAR;
-  earth.rotation.y += EARTH_YEAR;
-
-  venus.position.x -= EARTH_YEAR * 2;
-  venus.rotation.y += EARTH_YEAR * 2;
-
-  mars.position.x += EARTH_YEAR * 0.5;
-  mars.rotation.y += EARTH_YEAR * 0.5;
-
-  jupiter.position.x += EARTH_YEAR * 0.4;
-  jupiter.rotation.y += EARTH_YEAR * 0.4;
-
-  saturn.position.x += EARTH_YEAR * 0.5;
-  saturn.rotation.y += EARTH_YEAR * 0.5;
-
-  render();
-}
-
-function render() {
-  renderer.render(scene, camera);
-}
-
-init();
-animate();
+const solarSystem = new SolarSystem();
+solarSystem.start();
